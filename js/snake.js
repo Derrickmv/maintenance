@@ -1,104 +1,86 @@
-/*jslint browser: true*/
-/*global $, jQuery, alert*/
+/*jslint browser:true, plusplus: true */
+/*global $, jQuery, alert, console */
 
 $(document).ready(function () {
-    //Canvas stuff
-    var canvas = $("#canvas")[0];
-    var ctx = canvas.getContext("2d");
-    var width = $("#canvas").width();
-    var height = $("#canvas").height();
+    // Variable declarations
+    var width, height, canvas, canvas2d,
+        cWidth, dir, newDir, food, score, snake_array,
+        newX, newY, i, j;
+    canvas = $("#canvas")[0];
+    canvas2d = canvas.getContext("2d");
+    width = $("#canvas").width();
+    height = $("#canvas").height();
+    cWidth = 10; // cell width variable
 
-    //Lets save the cell width in a variable for easy control
-    var cWidth = 10;
-    var dir;
-    var newDir;
-    var food;
-    var score;
-
-    //Lets create the snake now
-    var snake_array; //an array of cells to make up the snake
-
-    //Lets create the food now
     function create_food() {
+        // set random coordinates for food initialization
         food = {
             x: Math.round(Math.random() * (width - cWidth) / cWidth),
-            y: Math.round(Math.random() * (height - cWidth) / cWidth),
+            y: Math.round(Math.random() * (height - cWidth) / cWidth)
         };
-        //This will create a cell with x/y between 0-44
-        //Because there are 45(450/10) positions accross the rows and columns
-    }
+    } // end function create food
 
     function create_snake() {
-        var length = 5; //Length of the snake
-        snake_array = []; //Empty array to start with
-        for (var i = length - 1; i >= 0; i--) {
-            //This will create a horizontal snake starting from the top left
+        var length = 4; // init length of snake array
+        snake_array = [];
+        for (i = length - 1; i >= 0; i--) {
+            //create snake from top left area of canvas
             snake_array.push({
                 x: i,
-                y: 0
+                y: 2
             });
         }
-    }
+    } // end function create_snake()
 
-    function init() {
-        dir = "right"; //default direction
-        newDir = [];
-        create_snake();
-        create_food(); //Now we can see the food particle
-        //finally lets display the score
+    function start() {
+        // set direction
+        dir = "right";
+        newDir = []; // new dir array
+//        create_snake();
+//        create_food();
         score = 0;
 
-        //Lets move the snake now using a timer which will trigger the paint function
-        //every 60ms
+        // move snake using timer
         if (typeof game_loop != "undefined") clearInterval(game_loop);
         game_loop = setInterval(paint, 60);
-    }
+    } // end function start()
 
-    //Lets first create a generic function to paint cells
     function paint_cell(x, y) {
-        ctx.fillStyle = "blue";
-        ctx.fillRect(x * cWidth, y * cWidth, cWidth, cWidth);
-        ctx.strokeStyle = "white";
-        ctx.strokeRect(x * cWidth, y * cWidth, cWidth, cWidth);
-    }
+        canvas2d.fillStyle = "#ff0001";
+        canvas2d.fillRect(x * cWidth, y * cWidth, cWidth, cWidth);
+        canvas2d.strokeStyle = "#FFFFFF";
+        canvas2d.strokeRect(x * cWidth, y * cWidth, cWidth, cWidth);
+    } // end function paint_cell(x,y)
 
-    function check_collision(x, y, array) {
-        //This function will check if the provided x/y coordinates exist
-        //in an array of cells or not
-        for (var i = 0; i < array.length; i++) {
-            if (array[i].x == x && array[i].y == y)
+
+    function check_collision(x, y, arr) {
+        for (j = 0; j < arr.length; j++) {
+            if (arr[j].x === x && arr[j].y === y)
                 return true;
         }
         return false;
-    }
+    } // end function check_collision(x,y,arr)
 
-    //Lets paint the snake now
     function paint() {
         if (newDir.length) {
             dir = newDir.shift();
         }
-        //To avoid the snake trail we need to paint the BG on every frame
-        //Lets paint the canvas now
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, width, height);
-        ctx.strokeStyle = "black";
-        ctx.strokeRect(0, 0, width, height);
 
-        //The movement code for the snake to come here.
-        //The logic is simple
-        //Pop out the tail cell and place it infront of the head cell
-        var newX = snake_array[0].x;
-        var newY = snake_array[0].y;
-        //These were the position of the head cell.
-        //We will increment it to get the new head position
-        //Lets add proper direction based movement now
-        if (dir == "right") {
+        canvas2d.fillStyle = "#FFFFFF";
+        canvas2d.fillRect(0, 0, width, height);
+        canvas2d.strokeStyle = "#121212";
+        canvas2d.strokeRect(0, 0, width, height);
+
+        newX = snake_array[0].x;
+        newY = snake_array[0].y;
+
+        if (dir === "right") {
             newX++;
-        } else if (dir == "left") {
+        } else if (dir === "left") {
             newX--;
-        } else if (dir == "up") {
+        } else if (dir === "up") {
             newY--;
-        } else if (dir == "down") {
+        } else if (dir === "down") {
             newY++;
         }
 
@@ -108,7 +90,7 @@ $(document).ready(function () {
         //Now if the head of the snake bumps into its body, the game will restart
         if (newX == -1 || newX == width / cWidth || newY == -1 || newY == height / cWidth || check_collision(newX, newY, snake_array)) {
             //restart game
-            init();
+            start();
             //Lets organize the code a bit now.
             return;
         }
@@ -144,7 +126,7 @@ $(document).ready(function () {
         paint_cell(food.x, food.y);
         //Lets paint the score
         var score_text = "Score: " + score;
-        ctx.fillText(score_text, 5, height - 5);
+        canvas2d.fillText(score_text, 5, height - 5);
     }
 
     //Lets add the keyboard controls now
@@ -163,11 +145,7 @@ $(document).ready(function () {
         else if (key == "40" && td != "up") newDir.push("down");
         //The snake is now keyboard controllable
     });
-
-    init();
-
-
-
-
-
-});
+    create_snake();
+    create_food();
+    start();
+}); // END: document.ready
