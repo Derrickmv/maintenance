@@ -5,7 +5,7 @@ $(document).ready(function () {
     // Variable declarations
     var width, height, canvas, canvas2d,
         cWidth, dir, newDir, food, score, snake_array,
-        newX, newY, i, j;
+        newX, newY, i, j, isGameOver = false, tail;
     canvas = $("#canvas")[0];
     canvas2d = canvas.getContext("2d");
     width = $("#canvas").width();
@@ -36,8 +36,8 @@ $(document).ready(function () {
         // set direction
         dir = "right";
         newDir = []; // new dir array
-//        create_snake();
-//        create_food();
+        create_snake();
+        create_food();
         score = 0;
 
         // move snake using timer
@@ -55,21 +55,30 @@ $(document).ready(function () {
 
     function check_collision(x, y, arr) {
         for (j = 0; j < arr.length; j++) {
-            if (arr[j].x === x && arr[j].y === y)
+            if (arr[j].x === x && arr[j].y === y) {
                 return true;
+            }
         }
         return false;
     } // end function check_collision(x,y,arr)
 
+    function game_over() {
+        console.log("inGameOver func");
+        isGameOver = true;
+        console.log("in if clause");
+        canvas2d.fillStyle = "#141414";
+        canvas2d.fillRect(0, 0, width, height);
+        return false;
+    }
+
     function paint() {
+        console.log("in paint func");
         if (newDir.length) {
             dir = newDir.shift();
         }
 
         canvas2d.fillStyle = "#FFFFFF";
         canvas2d.fillRect(0, 0, width, height);
-        canvas2d.strokeStyle = "#121212";
-        canvas2d.strokeRect(0, 0, width, height);
 
         newX = snake_array[0].x;
         newY = snake_array[0].y;
@@ -88,10 +97,10 @@ $(document).ready(function () {
         //This will restart the game if the snake hits the wall
         //Lets add the code for body collision
         //Now if the head of the snake bumps into its body, the game will restart
-        if (newX == -1 || newX == width / cWidth || newY == -1 || newY == height / cWidth || check_collision(newX, newY, snake_array)) {
+        if (newX === -1 || newX === width / cWidth || newY === -1 || newY === height / cWidth || check_collision(newX, newY, snake_array)) {
             //restart game
-            start();
-            //Lets organize the code a bit now.
+            isGameOver = true;
+            game_over();
             return;
         }
 
@@ -100,7 +109,7 @@ $(document).ready(function () {
         //If the new head position matches with that of the food,
         //Create a new head instead of moving the tail
         if (newX === food.x && newY === food.y) {
-            var tail = {
+            tail = {
                 x: newX,
                 y: newY
             };
@@ -108,7 +117,7 @@ $(document).ready(function () {
             //Create new food
             create_food();
         } else {
-            var tail = snake_array.pop(); //pops out the last cell
+            tail = snake_array.pop(); //pops out the last cell
             tail.x = newX;
             tail.y = newY;
         }
@@ -116,7 +125,7 @@ $(document).ready(function () {
 
         snake_array.unshift(tail); //puts back the tail as the first cell
 
-        for (var i = 0; i < snake_array.length; i++) {
+        for (i = 0; i < snake_array.length; i++) {
             var cell = snake_array[i];
             //Lets paint 10px wide cells
             paint_cell(cell.x, cell.y);
@@ -131,21 +140,19 @@ $(document).ready(function () {
 
     //Lets add the keyboard controls now
     $(document).keydown(function (e) {
-        var key = e.which;
-        var td;
+        var key = e.which, td;
         if (newDir.length) {
             var td = newDir[newDir.length - 1];
         } else {
             td = dir;
         }
         //We will add another clause to prevent reverse gear
-        if (key == "37" && td != "right") newDir.push("left");
-        else if (key == "38" && td != "down") newDir.push("up");
-        else if (key == "39" && td != "left") newDir.push("right");
-        else if (key == "40" && td != "up") newDir.push("down");
+        if (key == "37" && td !== "right") {newDir.push("left");}
+        else if (key == "38" && td !== "down") {newDir.push("up");}
+        else if (key == "39" && td !== "left") {newDir.push("right");}
+        else if (key == "40" && td !== "up") {newDir.push("down");}
         //The snake is now keyboard controllable
     });
-    create_snake();
-    create_food();
-    start();
+
+    $("#startGame").on("click",start);
 }); // END: document.ready
