@@ -33,6 +33,15 @@ $(document).ready(function () {
         }
     } // end function create_snake()
 
+    function game_over() {
+        console.log("inGameOver func");
+        canvas2d.fillStyle = "#141414";
+        canvas2d.fillRect(0, 0, width, height);
+        canvas2d.fillStyle = "#FFF";
+        canvas2d.fillText("Game Over", 50, height - 50);
+        return false;
+    } // END: game_over() func
+
     function paint() {
         console.log("in paint func");
         if (newDir.length) {
@@ -62,7 +71,7 @@ $(document).ready(function () {
         if (newX === -1 || newX === width / cWidth || newY === -1 || newY === height / cWidth || check_collision(newX, newY, snake_array)) {
             //restart game
             isGameOver = true;
-            //game_over();
+            game_over();
             return;
         }
 
@@ -100,8 +109,7 @@ $(document).ready(function () {
         canvas2d.fillText(score_text, 5, height - 5);
     } // END: paint() func
 
-    function start(e) {
-        e.preventDefault();
+    function start() {
         // set direction
         dir = "right";
         newDir = []; // new dir array
@@ -110,11 +118,11 @@ $(document).ready(function () {
         score = 0;
 
         // move snake using timer
-        if (typeof game_loop != "undefined") {
-            clearInterval(game_loop);
+        if (typeof gameInterval != "undefined") {
+            clearInterval(gameInterval);
         }
 //        game_loop = window.setInterval(paint, 65);
-//        gameInterval = window.setInterval(paint, 65);
+        gameInterval = window.setInterval(paint, 65);
     } // end function start()
 
     function paint_cell(x, y) {
@@ -133,16 +141,6 @@ $(document).ready(function () {
         }
         return false;
     } // end function check_collision(x,y,arr)
-
-    function game_over() {
-        console.log("inGameOver func");
-        canvas2d.fillStyle = "#141414";
-        canvas2d.fillRect(0, 0, width, height);
-        canvas2d.fillStyle = "#FFF";
-        canvas2d.fillText("Game Over", 50, height - 50);
-        return false;
-    }
-
 
 
     //Lets add the keyboard controls now
@@ -167,17 +165,17 @@ $(document).ready(function () {
         console.log("key pushed = " + dir);
     });
 
-//    function isPaused() {
-//        console.log("isPaused");
-//        if (!paused) {
-//            paused = true;
-//            window.clearInterval(gameInterval);
-//        } else if (paused) {
-//            paused = false;
-//            window.setInterval(gameInterval, 65);
-//        }
-//        console.log("var paused? = " + paused);
-//    }
+    function isPaused() {
+        console.log("isPaused");
+        if (!paused) {
+            paused = true;
+            window.clearInterval(gameInterval);
+        } else if (paused) {
+            paused = false;
+            window.setInterval(paint, 65);
+        }
+        console.log("var paused? = " + paused);
+    }
 
     // Clicking #startGame will execute start func
     $("#startGame").on("click", start);
@@ -185,9 +183,6 @@ $(document).ready(function () {
         // Once paused, button will be replaced by a Resume button
         // Resume will continue where player left off
         // Once Resume is clicked, button will change back to the initial Pause button
-//    $("#PauseResume").on("click", function (e) {
-//        e.preventDefault();
-//        isPaused();
-//    });
+    $("#PauseResume").on("click", isPaused);
 
 }); // END: document.ready
