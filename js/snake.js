@@ -1,11 +1,12 @@
 /*jslint browser:true, plusplus: true */
 /*global $, jQuery, alert, console */
 
-$(document).ready(function () {
+$(document).ready(function() {
     // Variable declarations
     var width, height, canvas, canvas2d,
         cWidth, dir, newDir, food, score, snake_array,
-        newX, newY, i, j, isGameOver = false, tail;
+        newX, newY, i, j, isGameOver = false,
+        tail;
     canvas = $("#canvas")[0];
     canvas2d = canvas.getContext("2d");
     width = $("#canvas").width();
@@ -42,7 +43,7 @@ $(document).ready(function () {
 
         // move snake using timer
         if (typeof game_loop != "undefined") clearInterval(game_loop);
-        game_loop = setInterval(paint, 60);
+        game_loop = setInterval(paint, 65);
     } // end function start()
 
     function paint_cell(x, y) {
@@ -64,10 +65,11 @@ $(document).ready(function () {
 
     function game_over() {
         console.log("inGameOver func");
-        isGameOver = true;
         console.log("in if clause");
         canvas2d.fillStyle = "#141414";
         canvas2d.fillRect(0, 0, width, height);
+        canvas2d.fillStyle = "#FFF";
+        canvas2d.fillText("Game Over", 50, height - 50);
         return false;
     }
 
@@ -139,20 +141,26 @@ $(document).ready(function () {
     }
 
     //Lets add the keyboard controls now
-    $(document).keydown(function (e) {
-        var key = e.which, td;
+    $(document).keydown(function(e) {
+        var key = e.which,
+            td;
         if (newDir.length) {
             var td = newDir[newDir.length - 1];
         } else {
             td = dir;
         }
         //We will add another clause to prevent reverse gear
-        if (key == "37" && td !== "right") {newDir.push("left");}
-        else if (key == "38" && td !== "down") {newDir.push("up");}
-        else if (key == "39" && td !== "left") {newDir.push("right");}
-        else if (key == "40" && td !== "up") {newDir.push("down");}
+        if (key == "37" && td !== "right") {
+            newDir.push("left");
+        } else if (key == "38" && td !== "down") {
+            newDir.push("up");
+        } else if (key == "39" && td !== "left") {
+            newDir.push("right");
+        } else if (key == "40" && td !== "up") {
+            newDir.push("down");
+        }
         //The snake is now keyboard controllable
     });
 
-    $("#startGame").on("click",start);
+    $("#startGame").on("click", start);
 }); // END: document.ready
