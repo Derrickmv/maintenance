@@ -6,7 +6,7 @@ $(document).ready(function () {
     var width, height, canvas, canvas2d,
         cWidth, dir, newDir, food, score, snake_array,
         newX, newY, i, j, isGameOver = false, score_text,
-        tail;
+        tail, paused = false, gameInterval;
     canvas = $("#canvas")[0];
     canvas2d = canvas.getContext("2d");
     width = $("#canvas").width();
@@ -32,48 +32,6 @@ $(document).ready(function () {
             });
         }
     } // end function create_snake()
-
-    function start() {
-        // set direction
-        dir = "right";
-        newDir = []; // new dir array
-        create_snake();
-        create_food();
-        score = 0;
-
-        // move snake using timer
-        if (typeof game_loop != "undefined") {
-            clearInterval(game_loop);
-        }
-        game_loop = setInterval(paint, 65);
-    } // end function start()
-
-    function paint_cell(x, y) {
-        canvas2d.fillStyle = "#ff0001";
-        canvas2d.fillRect(x * cWidth, y * cWidth, cWidth, cWidth);
-        canvas2d.strokeStyle = "#FFFFFF";
-        canvas2d.strokeRect(x * cWidth, y * cWidth, cWidth, cWidth);
-    } // end function paint_cell(x,y)
-
-
-    function check_collision(x, y, arr) {
-        for (j = 0; j < arr.length; j++) {
-            if (arr[j].x === x && arr[j].y === y) {
-                return true;
-            }
-        }
-        return false;
-    } // end function check_collision(x,y,arr)
-
-    function game_over() {
-        console.log("inGameOver func");
-        console.log("in if clause");
-        canvas2d.fillStyle = "#141414";
-        canvas2d.fillRect(0, 0, width, height);
-        canvas2d.fillStyle = "#FFF";
-        canvas2d.fillText("Game Over", 50, height - 50);
-        return false;
-    }
 
     function paint() {
         console.log("in paint func");
@@ -104,7 +62,7 @@ $(document).ready(function () {
         if (newX === -1 || newX === width / cWidth || newY === -1 || newY === height / cWidth || check_collision(newX, newY, snake_array)) {
             //restart game
             isGameOver = true;
-            game_over();
+            //game_over();
             return;
         }
 
@@ -140,7 +98,52 @@ $(document).ready(function () {
         //Lets paint the score
         score_text = "Score: " + score;
         canvas2d.fillText(score_text, 5, height - 5);
+    } // END: paint() func
+
+    function start(e) {
+        e.preventDefault();
+        // set direction
+        dir = "right";
+        newDir = []; // new dir array
+        create_snake();
+        create_food();
+        score = 0;
+
+        // move snake using timer
+        if (typeof game_loop != "undefined") {
+            clearInterval(game_loop);
+        }
+//        game_loop = window.setInterval(paint, 65);
+//        gameInterval = window.setInterval(paint, 65);
+    } // end function start()
+
+    function paint_cell(x, y) {
+        canvas2d.fillStyle = "#ff0001";
+        canvas2d.fillRect(x * cWidth, y * cWidth, cWidth, cWidth);
+        canvas2d.strokeStyle = "#FFFFFF";
+        canvas2d.strokeRect(x * cWidth, y * cWidth, cWidth, cWidth);
+    } // end function paint_cell(x,y)
+
+
+    function check_collision(x, y, arr) {
+        for (j = 0; j < arr.length; j++) {
+            if (arr[j].x === x && arr[j].y === y) {
+                return true;
+            }
+        }
+        return false;
+    } // end function check_collision(x,y,arr)
+
+    function game_over() {
+        console.log("inGameOver func");
+        canvas2d.fillStyle = "#141414";
+        canvas2d.fillRect(0, 0, width, height);
+        canvas2d.fillStyle = "#FFF";
+        canvas2d.fillText("Game Over", 50, height - 50);
+        return false;
     }
+
+
 
     //Lets add the keyboard controls now
     $(document).keydown(function (e) {
@@ -160,8 +163,21 @@ $(document).ready(function () {
         } else if (key == "40" && td !== "up") {
             newDir.push("down");
         }
-        //The snake is now keyboard controllable
+        // console output on keydown
+        console.log("key pushed = " + dir);
     });
+
+//    function isPaused() {
+//        console.log("isPaused");
+//        if (!paused) {
+//            paused = true;
+//            window.clearInterval(gameInterval);
+//        } else if (paused) {
+//            paused = false;
+//            window.setInterval(gameInterval, 65);
+//        }
+//        console.log("var paused? = " + paused);
+//    }
 
     // Clicking #startGame will execute start func
     $("#startGame").on("click", start);
@@ -169,4 +185,9 @@ $(document).ready(function () {
         // Once paused, button will be replaced by a Resume button
         // Resume will continue where player left off
         // Once Resume is clicked, button will change back to the initial Pause button
+//    $("#PauseResume").on("click", function (e) {
+//        e.preventDefault();
+//        isPaused();
+//    });
+
 }); // END: document.ready
