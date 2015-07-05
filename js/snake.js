@@ -1,11 +1,11 @@
 /*jslint browser:true, plusplus: true */
-/*global $, jQuery, alert, console */
+/*global $, jQuery, alert, console, game_loop, paint */
 
-$(document).ready(function() {
+$(document).ready(function () {
     // Variable declarations
     var width, height, canvas, canvas2d,
         cWidth, dir, newDir, food, score, snake_array,
-        newX, newY, i, j, isGameOver = false,
+        newX, newY, i, j, isGameOver = false, score_text,
         tail;
     canvas = $("#canvas")[0];
     canvas2d = canvas.getContext("2d");
@@ -42,7 +42,9 @@ $(document).ready(function() {
         score = 0;
 
         // move snake using timer
-        if (typeof game_loop != "undefined") clearInterval(game_loop);
+        if (typeof game_loop != "undefined") {
+            clearInterval(game_loop);
+        }
         game_loop = setInterval(paint, 65);
     } // end function start()
 
@@ -136,16 +138,15 @@ $(document).ready(function() {
         //Lets paint the food
         paint_cell(food.x, food.y);
         //Lets paint the score
-        var score_text = "Score: " + score;
+        score_text = "Score: " + score;
         canvas2d.fillText(score_text, 5, height - 5);
     }
 
     //Lets add the keyboard controls now
-    $(document).keydown(function(e) {
-        var key = e.which,
-            td;
+    $(document).keydown(function (e) {
+        var key = e.which, td;
         if (newDir.length) {
-            var td = newDir[newDir.length - 1];
+            td = newDir[newDir.length - 1];
         } else {
             td = dir;
         }
@@ -162,5 +163,10 @@ $(document).ready(function() {
         //The snake is now keyboard controllable
     });
 
+    // Clicking #startGame will execute start func
     $("#startGame").on("click", start);
+    // Will add a Pause button to pause the game
+        // Once paused, button will be replaced by a Resume button
+        // Resume will continue where player left off
+        // Once Resume is clicked, button will change back to the initial Pause button
 }); // END: document.ready
