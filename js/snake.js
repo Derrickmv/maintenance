@@ -176,10 +176,13 @@ $(document).ready(function () {
         if (!paused) {
             window.clearInterval(game_loop);
             paused = true;
+            $("#PauseResume").html("Resume");
+
         } else if (paused) {
             window.clearInterval(game_loop);
             game_loop = window.setInterval(paint, 65);
             paused = false;
+            $("#PauseResume").html("Pause");
         }
     });
 
