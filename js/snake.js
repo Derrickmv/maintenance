@@ -6,7 +6,7 @@ $(document).ready(function () {
     var width, height, canvas, canvas2d,
         cWidth, dir, newDir, food, score, snake_array,
         newX, newY, i, j, isGameOver = false, score_text,
-        tail, paused = false, gameInterval;
+        tail, paused = false;
     canvas = $("#canvas")[0];
     canvas2d = canvas.getContext("2d");
     width = $("#canvas").width();
@@ -118,11 +118,11 @@ $(document).ready(function () {
         score = 0;
 
         // move snake using timer
-        if (typeof gameInterval != "undefined") {
-            clearInterval(gameInterval);
+        if (typeof game_loop != "undefined") {
+            clearInterval(game_loop);
         }
-//        game_loop = window.setInterval(paint, 65);
-        gameInterval = window.setInterval(paint, 65);
+        game_loop = window.setInterval(paint, 65);
+//        var gameInterval = window.setInterval(paint, 65);
     } // end function start()
 
     function paint_cell(x, y) {
@@ -165,17 +165,6 @@ $(document).ready(function () {
         console.log("key pushed = " + dir);
     });
 
-    function isPaused() {
-        console.log("isPaused");
-        if (!paused) {
-            paused = true;
-            window.clearInterval(gameInterval);
-        } else if (paused) {
-            paused = false;
-            window.setInterval(paint, 65);
-        }
-        console.log("var paused? = " + paused);
-    }
 
     // Clicking #startGame will execute start func
     $("#startGame").on("click", start);
@@ -183,6 +172,15 @@ $(document).ready(function () {
         // Once paused, button will be replaced by a Resume button
         // Resume will continue where player left off
         // Once Resume is clicked, button will change back to the initial Pause button
-    $("#PauseResume").on("click", isPaused);
+    $("#PauseResume").on("click", function () {
+        if (!paused) {
+            window.clearInterval(game_loop);
+            paused = true;
+        } else if (paused) {
+            window.clearInterval(game_loop);
+            game_loop = window.setInterval(paint, 65);
+            paused = false;
+        }
+    });
 
 }); // END: document.ready
