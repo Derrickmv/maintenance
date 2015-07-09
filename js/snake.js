@@ -68,11 +68,19 @@ $(document).ready(function () {
         //This will restart the game if the snake hits the wall
         //Lets add the code for body collision
         //Now if the head of the snake bumps into its body, the game will restart
-        if (newX === -1 || newX === width / cWidth || newY === -1 || newY === height / cWidth || check_collision(newX, newY, snake_array)) {
-            //restart game
-            isGameOver = true;
+//        if (newX === -1 || newX === width / cWidth || newY === -1 || newY === height / cWidth || check_collision(newX, newY, snake_array)) {
+//            //restart game
+//            isGameOver = true;
+//            game_over();
+//            return;
+//        }
+       if (newX === -1 || newX === width / cWidth || newY === -1 || newY === height / cWidth) {
+           alert("passed wall");
+           console.log("hit wall");
+       }
+        if (check_collision(newX,newY,snake_array)) {
             game_over();
-            return;
+            return false;
         }
 
         //Lets write the code to make the snake eat the food
@@ -122,7 +130,7 @@ $(document).ready(function () {
             clearInterval(game_loop);
         }
         game_loop = window.setInterval(paint, 65);
-//        var gameInterval = window.setInterval(paint, 65);
+        $("#startGame").html("Restart");
     } // end function start()
 
     function paint_cell(x, y) {
@@ -177,6 +185,8 @@ $(document).ready(function () {
             window.clearInterval(game_loop);
             paused = true;
             $("#PauseResume").html("Resume");
+            canvas2d.fillStyle = "rgba(0, 0, 0, .8)";
+            canvas2d.fillRect(0, 0, width, height);
 
         } else if (paused) {
             window.clearInterval(game_loop);
