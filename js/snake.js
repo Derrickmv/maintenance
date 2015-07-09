@@ -77,6 +77,7 @@ $(document).ready(function () {
        if (newX === -1 || newX === width / cWidth || newY === -1 || newY === height / cWidth) {
            alert("passed wall");
            console.log("hit wall");
+           /// wrap around to the opposite side of the wall.
        }
         if (check_collision(newX,newY,snake_array)) {
             game_over();
