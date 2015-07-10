@@ -44,8 +44,17 @@ $(document).ready(function () {
         return false;
     } // END: game_over() func
 
+    function paint_snake(tx) {
+        for (i = 0; i < snake_array.length; i++) {
+            var cell = snake_array[i];
+            //Lets paint 10px wide cells
+            paint_cell(cell.x = tx, cell.y);
+            console.log(cell.x,cell.y);
+        }
+    }
     function paint() {
         console.log("in paint func");
+
         if (newDir.length) {
             dir = newDir.shift();
         }
@@ -77,11 +86,12 @@ $(document).ready(function () {
 //            return;
 //        }
        if (newX === -1 || newX === rWall || newY === -1 || newY === botWall) {
-           alert("passed wall");
+           //alert("passed wall");
            console.log("hit wall");
+           paint_snake();
            /// wrap around to the opposite side of the wall.
        }
-        if (check_collision(newX,newY,snake_array)) {
+        if (check_collision(newX, newY, snake_array)) {
             game_over();
             return false;
         }
@@ -107,18 +117,16 @@ $(document).ready(function () {
 
         snake_array.unshift(tail); //puts back the tail as the first cell
 
-        for (i = 0; i < snake_array.length; i++) {
-            var cell = snake_array[i];
-            //Lets paint 10px wide cells
-            paint_cell(cell.x, cell.y);
-        }
+        paint_snake();
 
-        //Lets paint the food
+        // paint cell of food coordinates
         paint_cell(food.x, food.y);
-        //Lets paint the score
+        //Display score on bottom left of canvas
         score_text = "Score: " + score;
         canvas2d.fillText(score_text, 5, height - 5);
     } // END: paint() func
+
+
 
     function start() {
         // set direction
@@ -132,7 +140,7 @@ $(document).ready(function () {
         if (typeof game_loop != "undefined") {
             clearInterval(game_loop);
         }
-        game_loop = window.setInterval(paint, 65);
+        game_loop = window.setInterval(paint, 200);
         $("#startGame").html("Restart");
     } // end function start()
 
@@ -193,7 +201,7 @@ $(document).ready(function () {
 
         } else if (paused) {
             window.clearInterval(game_loop);
-            game_loop = window.setInterval(paint, 65);
+            game_loop = window.setInterval(paint, 200);
             paused = false;
             $("#PauseResume").html("Pause");
         }
