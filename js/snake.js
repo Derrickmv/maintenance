@@ -6,12 +6,14 @@ $(document).ready(function () {
     var width, height, canvas, canvas2d,
         cWidth, dir, newDir, food, score, snake_array,
         newX, newY, i, j, isGameOver = false, score_text,
-        tail, paused = false;
+        tail, paused = false, rWall, botWall;
     canvas = $("#canvas")[0];
     canvas2d = canvas.getContext("2d");
     width = $("#canvas").width();
     height = $("#canvas").height();
     cWidth = 10; // cell width variable
+    rWall = width / cWidth;
+    botWall = height / cWidth;
 
     function create_food() {
         // set random coordinates for food initialization
@@ -74,7 +76,7 @@ $(document).ready(function () {
 //            game_over();
 //            return;
 //        }
-       if (newX === -1 || newX === width / cWidth || newY === -1 || newY === height / cWidth) {
+       if (newX === -1 || newX === rWall || newY === -1 || newY === botWall) {
            alert("passed wall");
            console.log("hit wall");
            /// wrap around to the opposite side of the wall.
