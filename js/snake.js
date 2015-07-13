@@ -87,7 +87,7 @@ $(document).ready(function () {
 //        }
        if (newX === -1 || newX === rWall || newY === -1 || newY === botWall) {
            //alert("passed wall");
-           console.log("hit wall");
+           console.log("---------- Wall is HIT. ----------");
            paint_snake();
            /// wrap around to the opposite side of the wall.
        }
